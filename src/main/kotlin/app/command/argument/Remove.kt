@@ -1,10 +1,12 @@
 package app.command.argument
 
-class Remove : ArgumentCommand {
+import app.command.ClientCommand
 
-    override val arg: Int
+class Remove : ClientCommand {
 
-    constructor(arg: Int) : super(arg) {
+    private val arg: Int
+
+    constructor(arg: Int) {
         this.arg = arg
     }
 

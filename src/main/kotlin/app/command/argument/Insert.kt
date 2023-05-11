@@ -1,17 +1,14 @@
 package app.command.argument
 
 
-import app.collection.ProductCollection
+import app.command.ClientCommand
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import product.*
 
 
-class Insert : ArgumentCommand, KoinComponent {
+class Insert : ClientCommand {
 
-    override val arg: Int
-
-    constructor(arg: Int) : super(arg) {
+    private val arg: Int
+    constructor( arg: Int) {
         this.arg = arg
     }
 
@@ -34,7 +31,6 @@ class Insert : ArgumentCommand, KoinComponent {
          }
         return null
     }
-
 
 
 }

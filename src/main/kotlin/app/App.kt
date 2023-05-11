@@ -1,6 +1,7 @@
 package app
 
 import app.command.ClientCommand
+import app.command.argument.Insert
 import app.command.cli.CommandInterpretation
 import app.command.cli.CommandReaderCLI
 import org.koin.core.component.KoinComponent
@@ -9,16 +10,21 @@ import org.koin.core.component.KoinComponent
 class App : KoinComponent {
    fun start() {
 
-
-
        repeat(20) {
            val a = CommandReaderCLI.readCommand()
            if (a != null) {
                val intCom = CommandInterpretation.interpretation(a)
                if (intCom != null) {
                    if (intCom.second != null) {
-                       val b = intCom.first.call(intCom.second) as ClientCommand
-                       b.execute()
+                       if(intCom.second!!.size == 1)
+                       {
+                           val b = intCom.first.call(intCom.second!![0]) as ClientCommand
+                           b.execute()
+                       } else if(intCom.second!!.size == 2){
+                           val b = intCom.first.call(intCom.second!![0], intCom.second!![1]) as ClientCommand
+                           b.execute()
+                       }
+
                    } else {
                        val b = intCom.first.call() as ClientCommand
                        b.execute()

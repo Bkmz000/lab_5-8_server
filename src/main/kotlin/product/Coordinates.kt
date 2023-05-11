@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 class Coordinates {
 
-    private val x: Int
-    private val y: Double
+    val x: Int
+    val y: Double
 
     constructor(x:Int, y:Double){
         this.x = x

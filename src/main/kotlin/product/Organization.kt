@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 @Serializable
 class Organization private constructor(
     private val id: Int,
-    private val name: String,
+    val name: String,
     private val fullName: String,
     private val type: OrganizationType,
     ){

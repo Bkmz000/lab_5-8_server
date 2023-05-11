@@ -1,16 +1,14 @@
 package app.command.argument
 
-import app.collection.ProductCollection
+import app.command.ClientCommand
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import product.Product
 
-class Update : ArgumentCommand, KoinComponent {
+class Update : ClientCommand {
 
 
-    override val arg: Int
+    private val arg: Int
 
-    constructor(arg: Int) : super(arg) {
+    constructor(arg: Int) {
         this.arg = arg
     }
 

@@ -7,12 +7,12 @@ import java.time.ZoneId
 class Product private constructor(
     val id: Int,
     val name: String,
-    private val coordinates: Coordinates,
+    val coordinates: Coordinates,
     @Contextual
-    private val creationDate: LocalDateTime,
-    private val price: Int,
-    private val unitOfMeasure: UnitOfMeasure,
-    private val manufacturer: Organization,
+    val creationDate: LocalDateTime,
+    val price: Int,
+    val unitOfMeasure: UnitOfMeasure,
+    val manufacturer: Organization,
 ){
     data class Builder(
         var name: String? = null,

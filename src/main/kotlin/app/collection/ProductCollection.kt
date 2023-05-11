@@ -54,6 +54,10 @@ class ProductCollection {
         }
     }
 
+    fun removeGreaterKey(key : Int){
+        products.entries.removeAll { it.key > key }
+    }
+
     fun clear() : String{
         products.clear()
         return "Success"

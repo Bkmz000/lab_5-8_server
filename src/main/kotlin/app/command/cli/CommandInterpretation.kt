@@ -3,9 +3,7 @@ package app.command.cli
 import app.command.AllCommands
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
-import kotlin.reflect.KType
+import kotlin.reflect.*
 import kotlin.reflect.full.memberProperties
 
 object CommandInterpretation : KoinComponent {
@@ -13,27 +11,29 @@ object CommandInterpretation : KoinComponent {
     private val allCommands by inject<AllCommands>()
 
 
-    fun interpretation(listOfWords: MutableList<String>): Pair<KFunction<Any>,Any?>?{
+    fun interpretation(listOfWords: MutableList<String>): Pair<KFunction<Any>,ArrayList<Any>?>?{
         val commandName = listOfWords[0]
 
         if (allCommands.commands.containsKey(commandName)){
             val commandConstructor = createInstanceOfCommandConstructor(commandName)
-            val typeOfArg = getTypeOfArgConstructor(allCommands.commands[commandName])
+            val typeOfArgs = getTypeOfArgConstructor(commandConstructor)
 
 
-            if(typeOfArg != null && listOfWords.size == 2){
-               return argumentCommand(commandConstructor = commandConstructor, typeOfArg = typeOfArg, possibleArg = listOfWords[1])
-            } else if(typeOfArg == null && listOfWords.size == 1){
+
+            if(typeOfArgs == null && listOfWords.size == 1){
                 return nonArgumentCommand(commandConstructor = commandConstructor)
+            } else
+                if (typeOfArgs != null && (listOfWords.size - 1 == typeOfArgs.size) ) {
+                    listOfWords.removeFirst()
+                return argumentCommand(commandConstructor = commandConstructor,typeOfArgs = typeOfArgs, possibleArgs =  listOfWords)
             }
-
         }
         return null
 
     }
 
 
-    private fun nonArgumentCommand(commandConstructor: KFunction<Any>) : Pair<KFunction<Any>,Any?>? {
+    private fun nonArgumentCommand(commandConstructor: KFunction<Any>) : Pair<KFunction<Any>,ArrayList<Any>?>? {
 
             return Pair(commandConstructor,null)
 
@@ -45,12 +45,18 @@ object CommandInterpretation : KoinComponent {
 
 
 
-    private fun argumentCommand(commandConstructor: KFunction<Any>, typeOfArg: KType, possibleArg : String) : Pair<KFunction<Any>,Any>? {
+    private fun argumentCommand(commandConstructor: KFunction<Any>, typeOfArgs: List<KParameter>, possibleArgs : MutableList<String>) : Pair<KFunction<Any>,ArrayList<Any>>? {
 
-            return when(val  argument =  possibleArg.castTo(typeOfArg)){
-                is Outcome.Success -> Pair(commandConstructor, argument.value)
-                is Outcome.Error -> null
+        val args = ArrayList<Any>()
+
+        for(i in 0 until possibleArgs.size){
+                when(val argument = possibleArgs[i].castTo(typeOfArgs[i])){
+                    is Outcome.Success -> args.add(argument.value)
+                    is Outcome.Error -> return null
+                }
             }
+
+        return Pair(commandConstructor,args)
         }
 
 
@@ -64,17 +70,18 @@ object CommandInterpretation : KoinComponent {
         }
     }
 
-    private fun String.castTo(type: KType) : Outcome<Any> = try {
-            var castedArg: Any
-            when (type.toString()) {
-                "kotlin.Int" -> {
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun String.castTo(type: KParameter) : Outcome<Any> = try {
+            val castedArg: Any
+            when (type.type.javaType) {
+                (Int::class.java) -> {
                     castedArg = this.toInt()
                     Outcome.Success(castedArg)
                 }
-                "kotlin.Double" -> {
+                (Double::class.java) -> {
                     castedArg = this.toDouble()
                     Outcome.Success(castedArg)
-                } "kotlin.String" -> {
+                } (String::class.java) -> {
                     castedArg = this
                     Outcome.Success(castedArg)
                 }
@@ -86,8 +93,11 @@ object CommandInterpretation : KoinComponent {
             Outcome.Error()
         }
 
-    private fun getTypeOfArgConstructor(constructor: KClass<*>?): KType?{
-        return constructor?.memberProperties?.find { it.name == "arg" }?.returnType
+    private fun getTypeOfArgConstructor(constructor:  KFunction<Any>?): List<KParameter>?{
+        val parameters = constructor?.parameters
+        return parameters?.ifEmpty {
+            null
+        }
     }
 
     sealed class Outcome<out T : Any> {
