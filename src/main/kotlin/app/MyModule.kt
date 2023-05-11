@@ -1,13 +1,12 @@
 package app
 
 import app.collection.ProductCollection
-import app.command.AllCommandNames
-import org.koin.core.module.dsl.factoryOf
+import app.command.AllCommands
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val commandModule = module {
-    singleOf(::AllCommandNames)
+    singleOf(::AllCommands)
 }
 
 

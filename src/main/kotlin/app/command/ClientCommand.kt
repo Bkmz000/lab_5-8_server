@@ -1,12 +1,14 @@
 package app.command
 
-abstract class ClientCommand {
+import app.collection.ProductCollection
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-    companion object{
+abstract class ClientCommand : KoinComponent {
 
-    }
 
-    abstract val info: String
+
+    val productCollection by inject<ProductCollection>()
     abstract fun execute(): String?
 
 

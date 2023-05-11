@@ -1,18 +1,16 @@
 package app.command.cli
 
-import app.command.AllCommandNames
+import app.command.AllCommands
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KType
-import kotlin.reflect.full.findParameterByName
 import kotlin.reflect.full.memberProperties
-import kotlin.reflect.full.primaryConstructor
 
 object CommandInterpretation : KoinComponent {
 
-    private val allCommands by inject<AllCommandNames>()
+    private val allCommands by inject<AllCommands>()
 
 
     fun interpretation(listOfWords: MutableList<String>): Pair<KFunction<Any>,Any?>?{
@@ -59,9 +57,10 @@ object CommandInterpretation : KoinComponent {
     private fun createInstanceOfCommandConstructor(commandName : String): KFunction<Any>{
         try {
             val command = allCommands.commands[commandName]
-            return command?.primaryConstructor!!
+            val constructors = command?.constructors as MutableList<KFunction<Any>>
+            return constructors[0]
         } catch (e: ClassNotFoundException) {
-            throw Error("There is no this command in AllCommandNames")
+            throw Error("There is no this command in AllCommands")
         }
     }
 

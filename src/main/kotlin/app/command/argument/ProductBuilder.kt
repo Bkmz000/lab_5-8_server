@@ -1,49 +1,35 @@
 package app.command.argument
 
-
 import app.collection.ProductCollection
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import product.*
 
-
-class InsertProduct(override val arg: Int) : ArgumentCommand(), KoinComponent {
-
+class ProductBuilder{
 
     private val product = Product.Builder()
 
-    private val productId:Int = arg
+    fun build(): Product? {
+        println("Write down the fields values: ")
+        setName()
+        setCoordinate()
+        setPrice()
+        setUnitOfMeasure()
+        setOrganization()
+        return product.build()
 
-    private val productCollection by inject<ProductCollection>()
-
-
-    override val info: String = "Adds a product to the collection"
-
-    override fun execute(): String? {
-
-           println("Write down the fields values: ")
-           setName()
-           setCoordinate()
-           setPrice()
-           setUnitOfMeasure()
-           setOrganization()
-           val builtProduct = product.build()
-           if (builtProduct != null) productCollection.addProduct(productId,builtProduct.also { println("${it.name} was successfully added!") })
-           else println("Unable to add!")
-
-    return null
     }
 
-   private fun setName(){
-       product.name(readLineUntilCondition("name: ") { true })
-   }
+    private fun setName(){
+        product.name(readLineUntilCondition("name: ") { true })
+    }
 
-   private fun setCoordinate(){
-       println("coordinate: ")
-       val x = readLineUntilCondition("x: ") { s: String -> s.toIntOrNull() != null}
-       val y = readLineUntilCondition("y: ") { s: String -> s.toDoubleOrNull() != null}
-       product.coordinates(Coordinates(x.toInt(),y.toDouble()))
-   }
+    private fun setCoordinate(){
+        println("coordinate: ")
+        val x = readLineUntilCondition("x: ") { s: String -> s.toIntOrNull() != null}
+        val y = readLineUntilCondition("y: ") { s: String -> s.toDoubleOrNull() != null}
+        product.coordinates(Coordinates(x.toInt(),y.toDouble()))
+    }
 
     private fun setPrice(){
         val price = readLineUntilCondition("price: ") { s: String -> s.toIntOrNull() != null }
@@ -82,7 +68,7 @@ class InsertProduct(override val arg: Int) : ArgumentCommand(), KoinComponent {
         organization.name(readLineUntilCondition("name: ") { true })
         organization.fullName(readLineUntilCondition("full name: ") {true})
         val organizationType = readLineUntilCondition(
-            "organization type (${enumValues<OrganizationType>().asList()}): ") {s: String -> checkIfOrganizationType(s)}
+            "organization type (${enumValues<OrganizationType>().asList()}): ") { s: String -> checkIfOrganizationType(s)}
         organization.type(OrganizationType.valueOf(organizationType))
         organization.build()?.let { product.manufacturer(it) }
     }
@@ -101,5 +87,4 @@ class InsertProduct(override val arg: Int) : ArgumentCommand(), KoinComponent {
             println("Message is incorrect. Please try again!")
         }
     }
-
 }

@@ -9,11 +9,10 @@ import org.koin.core.component.inject
 
 class Show : ClientCommand(), KoinComponent {
 
-    private val productCollection by inject<ProductCollection>()
-    
+    companion object{
+        const val info = "Displays the list of all products in the collection"
+    }
 
-
-    override val info: String = "Displays the list of all products in the collection"
 
     override fun execute(): String? {
         val products = Json.decodeFromJsonElement<String>(productCollection.showProducts())
