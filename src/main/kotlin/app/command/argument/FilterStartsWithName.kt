@@ -1,6 +1,9 @@
 package app.command.argument
 
 import app.command.ClientCommand
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 
 class FilterStartsWithName : ClientCommand {
 
@@ -12,9 +15,12 @@ class FilterStartsWithName : ClientCommand {
     }
 
 
-    override fun execute(): String? {
-        val values = productCollection.products.entries.filter { it.value.name.startsWith(name) }
-        println(values)
-        return "Success"
+    override fun execute(): JsonElement {
+        val products = productCollection.products.entries.filter { it.value.name.startsWith(name) }
+        return if (products.isNotEmpty()){
+            Json.encodeToJsonElement(products)
+        } else {
+            Json.encodeToJsonElement("No such elements")
+        }
     }
 }

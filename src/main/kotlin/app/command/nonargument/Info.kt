@@ -2,6 +2,9 @@ package app.command.nonargument
 
 import app.collection.ProductCollection
 import app.command.ClientCommand
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -12,10 +15,9 @@ class Info : ClientCommand(), KoinComponent {
     private val creationDate = productCollection.creationDate
     private val numberOfElements = productCollection.products.size
 
-    override fun execute(): String? {
+    override fun execute(): JsonElement {
 
-        println(this.toString())
-        return "Success"
+        return Json.encodeToJsonElement(this.toString())
 
 
     }

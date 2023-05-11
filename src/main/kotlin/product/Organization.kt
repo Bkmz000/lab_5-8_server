@@ -52,7 +52,7 @@ class Organization private constructor(
     }
 
     override fun toString(): String {
-        return "Organization(id=$id, name='$name', fullName='$fullName', type=$type)"
+        return "Organization(id = $id, name = '$name', fullName = '$fullName', type = $type)"
     }
 
 

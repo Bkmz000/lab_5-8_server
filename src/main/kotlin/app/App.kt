@@ -4,13 +4,25 @@ import app.command.ClientCommand
 import app.command.argument.Insert
 import app.command.cli.CommandInterpretation
 import app.command.cli.CommandReaderCLI
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 import org.koin.core.component.KoinComponent
 
 
 class App : KoinComponent {
+
+
+
    fun start() {
 
        repeat(20) {
+
+
+
+
            val a = CommandReaderCLI.readCommand()
            if (a != null) {
                val intCom = CommandInterpretation.interpretation(a)
@@ -19,15 +31,15 @@ class App : KoinComponent {
                        if(intCom.second!!.size == 1)
                        {
                            val b = intCom.first.call(intCom.second!![0]) as ClientCommand
-                           b.execute()
+                           println(Json.decodeFromJsonElement(b.execute()) as String)
                        } else if(intCom.second!!.size == 2){
                            val b = intCom.first.call(intCom.second!![0], intCom.second!![1]) as ClientCommand
-                           b.execute()
+                           println(Json.decodeFromJsonElement(b.execute()) as String)
                        }
 
                    } else {
                        val b = intCom.first.call() as ClientCommand
-                       b.execute()
+                       println(Json.decodeFromJsonElement(b.execute()) as String)
                    }
 
 

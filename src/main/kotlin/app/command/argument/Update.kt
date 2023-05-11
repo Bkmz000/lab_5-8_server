@@ -1,15 +1,17 @@
 package app.command.argument
 
 import app.command.ClientCommand
-import org.koin.core.component.KoinComponent
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 
 class Update : ClientCommand {
 
 
-    private val arg: Int
+    private val productId: Int
 
     constructor(arg: Int) {
-        this.arg = arg
+        this.productId = arg
     }
 
     companion object{
@@ -18,18 +20,18 @@ class Update : ClientCommand {
 
 
 
-    override fun execute(): String? {
-        return if(productCollection.products.containsKey(arg)){
-            val product = ProductBuilder().build()
-            if(product != null){
-                productCollection.replaceProduct(arg,product)
-                "Success"
+    override fun execute(): JsonElement {
+        return if(productCollection.products.containsKey(productId)){
+            val newProduct = ProductBuilder().build()
+            if(newProduct != null){
+                productCollection.products.replace(productId,newProduct)
+                    Json.encodeToJsonElement("Product was successfully updated")
             } else {
-                "Unable to add"
+                Json.encodeToJsonElement("Unable to add")
             }
 
         } else {
-            "No such element"
+            Json.encodeToJsonElement("No such element")
         }
     }
 }

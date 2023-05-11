@@ -1,10 +1,17 @@
 package app.command.nonargument
 
 import app.command.ClientCommand
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 
 class Clear : ClientCommand() {
-    override fun execute(): String? {
-        val result = productCollection.clear()
-        return if (result == "Success") "Success" else "Failure"
+    override fun execute(): JsonElement {
+        productCollection.products.clear()
+        return if(productCollection.products.isEmpty())
+            Json.encodeToJsonElement("Success")
+        else
+            Json.encodeToJsonElement("The collection has not been cleaned")
+
     }
 }

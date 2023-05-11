@@ -1,6 +1,9 @@
 package app.command.argument
 
 import app.command.ClientCommand
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 
 class FilterGreaterThanManufacturer : ClientCommand {
 
@@ -11,10 +14,13 @@ class FilterGreaterThanManufacturer : ClientCommand {
     }
 
 
-    override fun execute(): String? {
-        val values = productCollection.products.entries.filter {
+    override fun execute(): JsonElement {
+        val manufactures = productCollection.products.entries.filter {
             it.value.manufacturer.name.length > this.nameOfManufacturer.length }
-        println(values)
-        return "Success"
+        return if(manufactures.isNotEmpty()){
+            Json.encodeToJsonElement(manufactures)
+        } else {
+            Json.encodeToJsonElement("No such elements")
+        }
     }
 }

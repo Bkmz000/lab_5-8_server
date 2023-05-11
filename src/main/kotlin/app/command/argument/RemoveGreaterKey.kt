@@ -1,18 +1,25 @@
 package app.command.argument
 
 import app.command.ClientCommand
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 
 class RemoveGreaterKey : ClientCommand {
 
-    private val key: Int
+    private val productId: Int
 
     constructor(key: Int) : super() {
-        this.key = key
+        this.productId = key
     }
 
 
-    override fun execute(): String? {
-        productCollection.removeGreaterKey(key)
-        return "Success"
+    override fun execute(): JsonElement {
+        return if(productCollection.products.entries.removeAll { it.key > productId }){
+            Json.encodeToJsonElement("Products were successfully removed")
+        } else {
+            Json.encodeToJsonElement("No such elements")
+        }
+
     }
 }

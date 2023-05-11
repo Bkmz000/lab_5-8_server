@@ -2,14 +2,16 @@ package app.command.argument
 
 
 import app.command.ClientCommand
-import org.koin.core.component.KoinComponent
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 
 
 class Insert : ClientCommand {
 
-    private val arg: Int
+    private val productId: Int
     constructor( arg: Int) {
-        this.arg = arg
+        this.productId = arg
     }
 
     companion object{
@@ -17,19 +19,24 @@ class Insert : ClientCommand {
     }
 
 
-    override fun execute(): String? {
+    override fun execute(): JsonElement {
 
-         if(!productCollection.products.containsKey(arg)){
+          return if(!productCollection.products.containsKey(productId)){
              val product = ProductBuilder().build()
-             if(product != null){
-                 productCollection.addProduct(arg,product)
+                return if(product != null){
+                 productCollection.products[productId] = product
+                    return if(productCollection.products.containsKey(productId)){
+                        Json.encodeToJsonElement("Product with id ($productId) was successfully added")
+                    } else {
+                        Json.encodeToJsonElement("Unable to add")
+                    }
              } else {
-                 return "Unable to add!"
+                    Json.encodeToJsonElement("Unable to add")
              }
          } else {
-             return "The product with id($arg) already exist"
+              Json.encodeToJsonElement("The product with id($productId) already exist")
          }
-        return null
+
     }
 
 

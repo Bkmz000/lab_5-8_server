@@ -2,14 +2,14 @@ package product
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+
 @Serializable
 class Product private constructor(
     val id: Int,
     val name: String,
     val coordinates: Coordinates,
-    @Contextual
-    val creationDate: LocalDateTime,
+    val creationDate: String,
     val price: Int,
     val unitOfMeasure: UnitOfMeasure,
     val manufacturer: Organization,
@@ -17,7 +17,6 @@ class Product private constructor(
     data class Builder(
         var name: String? = null,
         var coordinates: Coordinates? = null,
-        var creationDate: LocalDateTime? = null,
         var price: Int? = null,
         var unitOfMeasure: UnitOfMeasure? = null,
         var manufacturer: Organization? = null,
@@ -35,7 +34,7 @@ class Product private constructor(
         fun build(): Product? {
             return if (isBuildEnough()) {
                 val id = LocalDateTime.now().nano - LocalDateTime.of(1900,1,1,1,1).nano
-                val currentTime = LocalDateTime.now()
+                val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
                 Product(id,name!!,coordinates!!,currentTime,price!!,unitOfMeasure!!,manufacturer!!)
             } else
                 null
@@ -59,14 +58,14 @@ class Product private constructor(
     }
 
     override fun toString(): String {
-        return """Product(
-            |id= $id 
-            |name= $name 
-            |coordinates= $coordinates 
-            |creationDate= $creationDate 
-            |price= $price 
-            |unitOfMeasure= $unitOfMeasure 
-            |manufacturer= $manufacturer)""".trimMargin()
+        return """
+            |Product (id) = $id 
+            |name = $name 
+            |coordinates = $coordinates 
+            |creationDate = $creationDate 
+            |price = $price 
+            |unitOfMeasure = $unitOfMeasure 
+            |manufacturer = $manufacturer)""".trimMargin()
     }
 
 
