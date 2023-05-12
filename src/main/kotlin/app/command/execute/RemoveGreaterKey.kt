@@ -11,9 +11,10 @@ class RemoveGreaterKey : ClientCommand {
     constructor(key: Int) : super() {
         this.productId = key
     }
+    override val name = "remove_greater_key"
 
 
-    override fun execute(): JsonElement {
+    override fun execute(arg: Any?): JsonElement {
         return if(productCollection.products.entries.removeAll { it.key > productId }){
             Json.encodeToJsonElement("Products were successfully removed")
         } else {

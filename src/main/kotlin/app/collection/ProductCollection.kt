@@ -9,7 +9,7 @@ import kotlinx.serialization.json.Json.Default.encodeToJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Single
-import product.Product
+import app.product.Product
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

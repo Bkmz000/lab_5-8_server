@@ -4,7 +4,10 @@ import kotlinx.serialization.json.JsonElement
 import kotlin.system.exitProcess
 
 class Exit : ClientCommand() {
-    override fun execute(): JsonElement {
+
+    override val name: String = "exit"
+
+    override fun execute(arg: Any?): JsonElement {
         exitProcess(0)
     }
 }

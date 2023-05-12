@@ -9,14 +9,15 @@ import kotlin.reflect.full.*
 
 class Help : ClientCommand(), KoinComponent {
     private val commandNames by inject<AllCommands>()
-
+    override val name = "help"
     companion object{
-        val info = "Show all commands"
+        const val info = "Show all commands"
     }
 
 
     private fun ArrayList<String>.toCustomString() : String{
         val builder = StringBuilder()
+        builder.append("The list of all commands:\n")
         for (item in this){
             builder.append(item)
                     .append("\n")
@@ -25,7 +26,7 @@ class Help : ClientCommand(), KoinComponent {
     }
 
 
-    override fun execute(): JsonElement {
+    override fun execute(arg: Any?): JsonElement {
         val listOfCommands = ArrayList<String>()
 
         for(item in commandNames.commands){

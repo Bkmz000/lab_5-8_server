@@ -15,8 +15,10 @@ class ReplaceIfGreater : ClientCommand {
         this.price = price
     }
 
+    override val name = "replace_if_greater"
 
-    override fun execute(): JsonElement {
+
+    override fun execute(arg: Any?): JsonElement {
         return if(productCollection.products.containsKey(productId)){
             val priceOfProduct = productCollection.products[productId]?.price
             if(priceOfProduct!! < this.price){

@@ -1,0 +1,21 @@
+insert 15
+1
+2
+3
+23
+KILOGRAMS
+5
+6
+PUBLIC
+info
+show
+update 1
+2
+454
+45
+24
+KILOGRAMS
+4546
+5454
+PUBLIC
+max_by_coordinates

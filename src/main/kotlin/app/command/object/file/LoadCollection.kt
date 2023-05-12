@@ -6,7 +6,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import product.Product
+import app.product.Product
 
 class LoadCollection : KoinComponent {
 

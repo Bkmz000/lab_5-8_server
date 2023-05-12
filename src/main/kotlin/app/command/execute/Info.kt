@@ -12,7 +12,9 @@ class Info : ClientCommand(), KoinComponent {
     private val creationDate = productCollection.creationDate
     private val numberOfElements = productCollection.products.size
 
-    override fun execute(): JsonElement {
+    override val name: String = "info"
+
+    override fun execute(arg: Any?): JsonElement {
 
         return Json.encodeToJsonElement(this.toString())
 

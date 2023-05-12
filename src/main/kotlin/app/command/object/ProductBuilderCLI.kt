@@ -1,12 +1,12 @@
 package app.command.`object`
 
-import product.*
+import app.product.*
 
 class ProductBuilderCLI : ProductBuilder(){
 
     private val product = Product.Builder()
 
-    override fun build(): Product? {
+    override fun build(args: Any?): Product? {
         println("Write down the fields values: ")
         setName()
         setCoordinate()

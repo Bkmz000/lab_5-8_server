@@ -1,6 +1,8 @@
 package app.command.execute
 
+import app.command.`object`.ProductBuilder
 import app.command.`object`.ProductBuilderCLI
+import app.command.`object`.ProductBuilderScript
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
@@ -9,6 +11,8 @@ class Update : ClientCommand {
 
 
     private val productId: Int
+    private lateinit var productBuilder: ProductBuilder
+    override val name = "update"
 
     constructor(arg: Int) {
         this.productId = arg
@@ -20,9 +24,10 @@ class Update : ClientCommand {
 
 
 
-    override fun execute(): JsonElement {
+    override fun execute(arg: Any?): JsonElement {
         return if(productCollection.products.containsKey(productId)){
-            val newProduct = ProductBuilderCLI().build()
+            val productBuilder: ProductBuilder = if (arg != null) ProductBuilderScript() else ProductBuilderCLI()
+            val newProduct = productBuilder.build(arg)
             if(newProduct != null){
                 productCollection.products.replace(productId,newProduct)
                     Json.encodeToJsonElement("Product was successfully updated")

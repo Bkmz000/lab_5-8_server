@@ -7,17 +7,19 @@ import kotlinx.serialization.json.encodeToJsonElement
 class FilterStartsWithName : ClientCommand {
 
 
-    private val name: String
+    private val subName: String
 
     constructor(name: String) {
-        this.name = name
+        this.subName = name
     }
 
+    override val name: String = "filter_starts_with_name"
 
-    override fun execute(): JsonElement {
-        val products = productCollection.products.entries.filter { it.value.name.startsWith(name) }
+
+    override fun execute(arg: Any?): JsonElement {
+        val products = productCollection.products.entries.filter { it.value.name.startsWith(subName) }
         return if (products.isNotEmpty()){
-            Json.encodeToJsonElement(products)
+            Json.encodeToJsonElement(products.toString())
         } else {
             Json.encodeToJsonElement("No such elements")
         }

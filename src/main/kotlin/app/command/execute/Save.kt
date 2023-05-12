@@ -6,7 +6,7 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
-import product.Product
+import app.product.Product
 
 class Save : ClientCommand() {
 
@@ -14,7 +14,9 @@ class Save : ClientCommand() {
 
     private val json = Json { prettyPrint = true }
 
-    override fun execute(): JsonElement {
+    override val name = "save"
+
+    override fun execute(arg: Any?): JsonElement {
 
         return if (file != null){
             val collectionJson = json.encodeToString(MapSerializer(Int.serializer(), Product.serializer()),productCollection.products)

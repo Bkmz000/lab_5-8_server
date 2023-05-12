@@ -12,7 +12,9 @@ class Remove : ClientCommand {
         this.productId = arg
     }
 
-    override fun execute(): JsonElement {
+    override val name = "remove"
+
+    override fun execute(arg: Any?): JsonElement {
         return if(productCollection.products.containsKey(productId)){
              productCollection.products.remove(productId)
             if (!productCollection.products.containsKey(productId)){

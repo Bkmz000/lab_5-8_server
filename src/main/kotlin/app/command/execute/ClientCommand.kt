@@ -7,10 +7,10 @@ import org.koin.core.component.inject
 
 abstract class ClientCommand : KoinComponent {
 
-
-
     val productCollection by inject<ProductCollection>()
-    abstract fun execute(): JsonElement
+
+    abstract val name: String
+    abstract fun execute(arg: Any? = null): JsonElement
 
 
 

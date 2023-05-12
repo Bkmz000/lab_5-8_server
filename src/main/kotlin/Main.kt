@@ -1,6 +1,6 @@
 
 import app.App
-import modules.allModules
+import app.modules.allModules
 import org.koin.core.context.startKoin
 import org.koin.java.KoinJavaComponent.inject
 

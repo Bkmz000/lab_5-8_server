@@ -11,9 +11,10 @@ class FilterGreaterThanManufacturer : ClientCommand {
     constructor(nameOfManufacturer: String) {
         this.nameOfManufacturer = nameOfManufacturer
     }
+    override val name: String = "filter_greater_than_manufacturer"
 
 
-    override fun execute(): JsonElement {
+    override fun execute(arg: Any?): JsonElement {
         val manufactures = productCollection.products.entries.filter {
             it.value.manufacturer.name.length > this.nameOfManufacturer.length }
         return if(manufactures.isNotEmpty()){

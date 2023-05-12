@@ -1,6 +1,5 @@
 package app.command.execute
 
-import app.command.execute.*
 import kotlin.reflect.KClass
 
 class AllCommands {
@@ -24,9 +23,9 @@ class AllCommands {
         commands["filter_starts_with_name"] = FilterStartsWithName::class
         commands["filter_greater_than_manufacturer"] = FilterGreaterThanManufacturer::class
         commands["save"] = Save::class
-        commands["execute_script"] = Execute_script::class
+        commands["execute_script"] = ExecuteScript::class
+        commands["history"] = History::class
 
-        commands["parse"] = parse::class
     }
 
 

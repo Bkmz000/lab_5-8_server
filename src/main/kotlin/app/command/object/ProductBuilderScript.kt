@@ -1,12 +1,17 @@
 package app.command.`object`
 
-import product.*
+import app.product.*
 
-class ProductBuilderScript {
+class ProductBuilderScript : ProductBuilder() {
     private val product = Product.Builder()
 
-    fun build(): Product? {
-        println("Write down the fields values: ")
+    private lateinit var argumenstFromUser: MutableList<String>
+
+
+
+    override fun build(args: Any?): Product? {
+
+        argumenstFromUser = args as MutableList<String>
         setName()
         setCoordinate()
         setPrice()
@@ -14,25 +19,29 @@ class ProductBuilderScript {
         setOrganization()
         return product.build()
 
+
     }
 
     private fun setName(){
-        product.name(readLineUntilCondition("name: ") { true })
+        readLineUntilCondition(argumenstFromUser[0]) { true }?.let { product.name(it) }
     }
 
     private fun setCoordinate(){
-        println("coordinate: ")
-        val x = readLineUntilCondition("x: ") { s: String -> s.toIntOrNull() != null}
-        val y = readLineUntilCondition("y: ") { s: String -> s.toDoubleOrNull() != null}
-        product.coordinates(Coordinates(x.toInt(),y.toDouble()))
+        val x = readLineUntilCondition(argumenstFromUser[1]) { s: String -> s.toIntOrNull() != null}
+        val y = readLineUntilCondition(argumenstFromUser[2]) { s: String -> s.toDoubleOrNull() != null}
+        if (x != null && y != null) {
+            product.coordinates(Coordinates(x.toInt(),y.toDouble()))
+        }
     }
 
     private fun setPrice(){
-        val price = readLineUntilCondition("price: ") { s: String -> s.toIntOrNull() != null }
-        product.price(price.toInt())
+        val price = readLineUntilCondition(argumenstFromUser[3]) { s: String -> s.toIntOrNull() != null }
+        if (price != null) {
+            product.price(price.toInt())
+        }
     }
     private fun setUnitOfMeasure(){
-        fun checkIfUnitOfMeasure(s:String):Boolean{
+        fun checkIfUnitOfMeasure(s:String): Boolean {
             try {
                 UnitOfMeasure.valueOf(s)
             } catch (e: IllegalArgumentException){
@@ -42,12 +51,11 @@ class ProductBuilderScript {
         }
 
 
-        val unitOfMeasure = readLineUntilCondition(
-            "unit if measure (${enumValues<UnitOfMeasure>().asList()}): ") { s:String -> checkIfUnitOfMeasure(s) }
-        product.unitOfMeasure(UnitOfMeasure.valueOf(unitOfMeasure))
+        val unitOfMeasure = readLineUntilCondition(argumenstFromUser[4]) { s:String -> checkIfUnitOfMeasure(s) }
+        unitOfMeasure?.let { UnitOfMeasure.valueOf(it) }?.let { product.unitOfMeasure(it) }
     }
 
-    private fun setOrganization(){
+    private fun setOrganization() {
         fun checkIfOrganizationType(s:String):Boolean{
             try {
                 OrganizationType.valueOf(s)
@@ -60,27 +68,20 @@ class ProductBuilderScript {
 
 
         val organization = Organization.Builder()
-        println("organization: ")
-        organization.name(readLineUntilCondition("name: ") { true })
-        organization.fullName(readLineUntilCondition("full name: ") {true})
-        val organizationType = readLineUntilCondition(
-            "organization type (${enumValues<OrganizationType>().asList()}): ") { s: String -> checkIfOrganizationType(s)}
-        organization.type(OrganizationType.valueOf(organizationType))
+        readLineUntilCondition(argumenstFromUser[5]) { true }?.let { organization.name(it) }
+        readLineUntilCondition(argumenstFromUser[6]) {true}?.let { organization.fullName(it) }
+        val organizationType = readLineUntilCondition(argumenstFromUser[7]) { s: String -> checkIfOrganizationType(s)}
+        organizationType?.let { OrganizationType.valueOf(it) }?.let { organization.type(it) }
         organization.build()?.let { product.manufacturer(it) }
     }
 
 
-    private fun readLineUntilCondition(prefixString: String, condition: (String) -> Boolean): String{
-        var messageFromUser:String
-        while (true){
-            print(prefixString)
-            readln().also { messageFromUser = it }
+    private fun readLineUntilCondition(messageFromUser: String, condition: (String) -> Boolean): String?{
             if(messageFromUser.isNotEmpty()){
                 if(condition(messageFromUser)){
                     return messageFromUser
                 }
             }
-            println("Message is incorrect. Please try again!")
-        }
+            return null
     }
 }
