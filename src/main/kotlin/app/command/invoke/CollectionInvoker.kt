@@ -1,6 +1,6 @@
 package app.command.invoke
 
-import app.command.ClientCommand
+import app.command.execute.ClientCommand
 
 object CollectionInvoker {
     private val commands = mutableListOf<ClientCommand>()

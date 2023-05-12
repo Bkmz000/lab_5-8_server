@@ -14,7 +14,7 @@ class Coordinates {
     }
 
     override fun toString(): String {
-        return "(x = $x, y = $y)"
+        return "Coordinates(x=$x, y=$y)"
     }
 
 

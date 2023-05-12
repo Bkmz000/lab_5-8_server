@@ -1,14 +1,10 @@
 package app
 
-import app.command.ClientCommand
-import app.command.argument.Insert
+import app.command.execute.ClientCommand
 import app.command.cli.CommandInterpretation
-import app.command.cli.CommandReaderCLI
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.encodeToJsonElement
+import app.command.cli.SplittingMessages
+import app.command.`object`.file.LoadCollection
+import kotlinx.serialization.json.*
 import org.koin.core.component.KoinComponent
 
 
@@ -17,13 +13,14 @@ class App : KoinComponent {
 
 
    fun start() {
+       val r = LoadCollection().load()
 
        repeat(20) {
 
+            val json = Json { prettyPrint = true }
 
 
-
-           val a = CommandReaderCLI.readCommand()
+           val a = SplittingMessages.split(readln())
            if (a != null) {
                val intCom = CommandInterpretation.interpretation(a)
                if (intCom != null) {
@@ -31,18 +28,20 @@ class App : KoinComponent {
                        if(intCom.second!!.size == 1)
                        {
                            val b = intCom.first.call(intCom.second!![0]) as ClientCommand
-                           println(Json.decodeFromJsonElement(b.execute()) as String)
+                           println(json.decodeFromJsonElement(b.execute()) as String)
                        } else if(intCom.second!!.size == 2){
                            val b = intCom.first.call(intCom.second!![0], intCom.second!![1]) as ClientCommand
-                           println(Json.decodeFromJsonElement(b.execute()) as String)
+                           println(json.decodeFromJsonElement(b.execute()) as String)
                        }
 
                    } else {
                        val b = intCom.first.call() as ClientCommand
-                       println(Json.decodeFromJsonElement(b.execute()) as String)
+                       println(json.decodeFromJsonElement(b.execute()) as String)
                    }
 
 
+               } else {
+                   println("Unknown command")
                }
            }
        }
@@ -56,7 +55,7 @@ class App : KoinComponent {
 //       println(f2)
 
 
-//       val f1 = CommandReaderCLI.readCommand()
+//       val f1 = SplittingMessages.readCommand()
 //       val json = Json { this.prettyPrint = true}
 //       if (f1 != null){
 //           val f2 = json.encodeToJsonElement(f1)

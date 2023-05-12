@@ -59,13 +59,12 @@ class Product private constructor(
 
     override fun toString(): String {
         return """
-            |Product (id) = $id 
-            |name = $name 
-            |coordinates = $coordinates 
-            |creationDate = $creationDate 
-            |price = $price 
-            |unitOfMeasure = $unitOfMeasure 
-            |manufacturer = $manufacturer)""".trimMargin()
+            |Product(
+            |id=$id, name='$name', 
+            |coordinates=$coordinates, 
+            |creationDate='$creationDate', price=$price, 
+            |unitOfMeasure=$unitOfMeasure, 
+            |manufacturer=$manufacturer)""".trimMargin()
     }
 
 

@@ -1,10 +1,9 @@
 package app.command.cli
 
-import app.command.AllCommands
+import app.command.execute.AllCommands
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.reflect.*
-import kotlin.reflect.full.memberProperties
 
 object CommandInterpretation : KoinComponent {
 

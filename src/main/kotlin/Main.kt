@@ -1,12 +1,8 @@
 
 import app.App
-import app.allModules
-import com.google.gson.Gson
+import modules.allModules
 import org.koin.core.context.startKoin
-import org.koin.core.component.inject
 import org.koin.java.KoinJavaComponent.inject
-
-import product.Coordinates
 
 
 fun main(args: Array<String>) {
