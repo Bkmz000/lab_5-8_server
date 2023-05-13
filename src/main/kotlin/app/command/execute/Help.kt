@@ -32,7 +32,7 @@ class Help : ClientCommand(), KoinComponent {
         for(item in commandNames.commands){
             val propertyWithTheInfo = item.value.companionObject?.declaredMemberProperties?.find { it.name == "info" }
             if(propertyWithTheInfo != null){
-                val n = propertyWithTheInfo?.getter?.call(item.value.companionObjectInstance)
+                val n = propertyWithTheInfo.getter.call(item.value.companionObjectInstance)
                 listOfCommands.add("${item.key} - $n")
             } else {
                 listOfCommands.add("${item.key} - no info yet")

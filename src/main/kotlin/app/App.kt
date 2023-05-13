@@ -17,7 +17,7 @@ class App : KoinComponent {
 
         while (true) {
 
-            val message = CommandInterpretation.interpretation(readln())
+            val message = CommandInterpretation.getPairOfCommandAndArgs(readln())
             if (message != null) {
                 val command = CommandBuilder().build(message)
                 CommandInvoker.executeCommand(command)

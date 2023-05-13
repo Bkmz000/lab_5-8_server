@@ -29,12 +29,14 @@ class ExecuteScript : ClientCommand {
 
 
         if (file == null) return Json.encodeToJsonElement("File with script was not found")
+
         val textAsArray = file.bufferedReader().readLines() as ArrayList
+
         var outerIndex: Int = 0
         try {
             for (indexOfLine in 0 until textAsArray.size step 1) {
                     indexOfLine.also { outerIndex = it }
-                    val command = CommandInterpretation.interpretation(textAsArray[indexOfLine])
+                    val command = CommandInterpretation.getPairOfCommandAndArgs(textAsArray[indexOfLine])
                     if (command != null) {
 
                             val resultOfCommand: JsonElement

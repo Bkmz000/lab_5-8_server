@@ -9,40 +9,36 @@ object CommandInterpretation : KoinComponent {
 
     private val allCommands by inject<AllCommands>()
 
-
-    fun interpretation(message: String): Pair<KFunction<Any>,ArrayList<Any>?>?{
+    fun getPairOfCommandAndArgs(message: String): Pair<KFunction<Any>,ArrayList<Any>?>?{
 
         val listOfWords = split(message) ?: return null
-
-        val commandName = listOfWords[0]
+        val commandName = listOfWords.removeFirst()
 
         if (allCommands.commands.containsKey(commandName)){
             val commandConstructor = createInstanceOfCommandConstructor(commandName)
-            val typeOfArgs = getTypeOfArgConstructor(commandConstructor)
+            val typesOfCommandArgs = getTypeOfArgConstructor(commandConstructor)
 
+            return when(getTypeOfCommandByCheckingValidOfArgs(typesOfCommandArgs,listOfWords)){
+                TypeOfCommand.ARGUMENT -> {
+                    getPairOfArgumentCommandAndArgs(commandConstructor = commandConstructor,typeOfArgs = typesOfCommandArgs!!, possibleArgs =  listOfWords)
+                }
 
+                TypeOfCommand.NON_ARGUMENT -> {
+                    getPairOfNONArgumentCommandAndNull(commandConstructor = commandConstructor)
+                }
 
-            if(typeOfArgs == null && listOfWords.size == 1){
-                return nonArgumentCommand(commandConstructor = commandConstructor)
-            } else
-                if (typeOfArgs != null && (listOfWords.size - 1 == typeOfArgs.size) ) {
-                    listOfWords.removeFirst()
-                return argumentCommand(commandConstructor = commandConstructor,typeOfArgs = typeOfArgs, possibleArgs =  listOfWords)
+                TypeOfCommand.NOT_A_COMMAND -> {
+                    null
+                }
             }
-        }
+        }// if
         return null
-
     }
-
-
 
     private fun split(message: String): MutableList<String>? {
 
         if (message.isEmpty())  return null
-
-        val listOfWords = message.split(" ") as MutableList
-
-
+        val listOfWords = message.split(" ").toMutableList()
         val iterator = listOfWords.listIterator()
         while (iterator.hasNext()) {
             if (iterator.next().isBlank()) {
@@ -54,32 +50,6 @@ object CommandInterpretation : KoinComponent {
     }
 
 
-    private fun nonArgumentCommand(commandConstructor: KFunction<Any>) : Pair<KFunction<Any>,ArrayList<Any>?>? {
-
-            return Pair(commandConstructor,null)
-    }
-
-
-
-
-
-
-
-    private fun argumentCommand(commandConstructor: KFunction<Any>, typeOfArgs: List<KParameter>, possibleArgs : MutableList<String>) : Pair<KFunction<Any>,ArrayList<Any>>? {
-
-        val args = ArrayList<Any>()
-
-        for(i in 0 until possibleArgs.size){
-                when(val argument = possibleArgs[i].castTo(typeOfArgs[i])){
-                    is Outcome.Success -> args.add(argument.value)
-                    is Outcome.Error -> return null
-                }
-            }
-
-        return Pair(commandConstructor,args)
-        }
-
-
     private fun createInstanceOfCommandConstructor(commandName : String): KFunction<Any>{
         try {
             val command = allCommands.commands[commandName]
@@ -89,9 +59,47 @@ object CommandInterpretation : KoinComponent {
             throw Error("There is no this command in AllCommands")
         }
     }
+    private fun getTypeOfArgConstructor(constructor:  KFunction<Any>?): List<KParameter>?{
+        val parameters = constructor?.parameters
+        return parameters?.ifEmpty {
+            null
+        }
+    }
+    private fun getTypeOfCommandByCheckingValidOfArgs(typeOfArgs:  List<KParameter>?, listOfWords: MutableList<String>) : TypeOfCommand{
+        if(typeOfArgs == null && listOfWords.isEmpty()){
+            return TypeOfCommand.NON_ARGUMENT
+        } else
+            if (typeOfArgs != null && (listOfWords.size == typeOfArgs.size) ) {
+                return TypeOfCommand.ARGUMENT
+            }
+        return TypeOfCommand.NOT_A_COMMAND
+    }
+    private enum class TypeOfCommand{
+        ARGUMENT,
+        NON_ARGUMENT,
+        NOT_A_COMMAND
+    }
+
+
+    private fun getPairOfNONArgumentCommandAndNull(commandConstructor: KFunction<Any>) : Pair<KFunction<Any>,ArrayList<Any>?> {
+            return Pair(commandConstructor,null)
+    }
+    private fun getPairOfArgumentCommandAndArgs(commandConstructor: KFunction<Any>, typeOfArgs: List<KParameter>, possibleArgs : MutableList<String>) : Pair<KFunction<Any>,ArrayList<Any>>? {
+
+        val args = ArrayList<Any>()
+
+        for(i in 0 until possibleArgs.size){
+                when(val argument = possibleArgs[i].tryCastTo(typeOfArgs[i])){
+                    is Outcome.Success -> args.add(argument.value)
+                    is Outcome.Error -> return null
+                }
+            }
+
+        return Pair(commandConstructor,args)
+        }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun String.castTo(type: KParameter) : Outcome<Any> = try {
+    private fun String.tryCastTo(type: KParameter) : Outcome<Any> = try {
             val castedArg: Any
             when (type.type.javaType) {
                 (Int::class.java) -> {
@@ -114,13 +122,6 @@ object CommandInterpretation : KoinComponent {
         } catch (ex: NumberFormatException){
         Outcome.Error()
         }
-
-    private fun getTypeOfArgConstructor(constructor:  KFunction<Any>?): List<KParameter>?{
-        val parameters = constructor?.parameters
-        return parameters?.ifEmpty {
-            null
-        }
-    }
 
     sealed class Outcome<out T : Any> {
         data class Success<out T : Any>(val value: T) : Outcome<T>()
