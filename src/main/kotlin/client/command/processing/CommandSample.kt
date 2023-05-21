@@ -1,7 +1,5 @@
-package client.command
+package client.command.processing
 
-import client.command.CommandType.*
-import java.lang.IllegalArgumentException
 import kotlin.reflect.KClass
 
 data class CommandSample(

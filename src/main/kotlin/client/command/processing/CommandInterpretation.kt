@@ -1,9 +1,11 @@
 package client.command.processing
 
 import client.command.*
-import client.command.RequestType.COMMAND_EXECUTE
+import client.command.processing.RequestType.COMMAND_EXECUTE
+import client.command.`object`.ProductBuilderCLI
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.io.File
 import kotlin.reflect.*
 
 object CommandInterpretation : KoinComponent {
@@ -12,7 +14,7 @@ object CommandInterpretation : KoinComponent {
 
     fun getCommandPacket(message: String) : CommandPacket?{
 
-        val listOfWords = splitStringToListWithoutBlanks(message)  ?: return null
+        val listOfWords = message.toListWithoutBlanks() ?: return null
         val commandName = listOfWords.removeFirst()
         val commandSample = allCommandSamples.samples
                                                                     .filter { it.equals(commandName) }
@@ -20,9 +22,9 @@ object CommandInterpretation : KoinComponent {
 
         val commandPacket = when(commandSample.type) {
             CommandType.ARGUMENT -> getArgumentCommandPacket(commandSample, listOfWords)
-            CommandType.OBJECT -> TODO()
+            CommandType.OBJECT -> getObjectCommandPacket(commandSample, listOfWords)
             CommandType.NON_ARGUMENT -> getNonArgumentCommandPacket(commandSample, listOfWords)
-            CommandType.FILE -> TODO()
+            CommandType.SCRIPT -> getScriptCommandPacket(commandSample, listOfWords)
         }
 
         return commandPacket
@@ -31,12 +33,13 @@ object CommandInterpretation : KoinComponent {
 
     }
 
-    private fun splitStringToListWithoutBlanks(message: String): MutableList<String>? {
+    private fun String.toListWithoutBlanks() : MutableList<String>? {
 
-        message.ifEmpty { null }
-        val listOfWords = message.split(" ").toMutableList()
-        listOfWords.removeAll { it.isBlank() }
+        this.ifEmpty { null }
+        val listOfWords = this.split(" ").toMutableList()
+        listOfWords.removeAll { this.isBlank() }
         return listOfWords.ifEmpty { null }
+
     }
 
 
@@ -45,22 +48,35 @@ object CommandInterpretation : KoinComponent {
     }
 
     private fun getArgumentCommandPacket(commandSample: CommandSample, possibleArgs: MutableList<String>) : CommandPacket? {
-        val commandArgs = getListWithCastedArgs(commandSample.typeOfArgs!!, possibleArgs)
 
-        return if(possibleArgs.isEmpty()) CommandPacket(COMMAND_EXECUTE, commandSample.name, commandArgs) else null
+        val commandArgs = possibleArgs.tryCastTo(commandSample.typeOfArgs!!) ?: return null
+
+        return  CommandPacket(COMMAND_EXECUTE, commandSample.name, commandArgs)
 
     }
 
     private fun getObjectCommandPacket(commandSample: CommandSample, possibleArgs: MutableList<String>) : CommandPacket? {
-       return null
+        val commandArg = possibleArgs.tryCastTo(commandSample.typeOfArgs!!) ?: return null
 
+        val product = ProductBuilderCLI().build() ?: return null
+
+        return CommandPacket(COMMAND_EXECUTE, commandSample.name, commandArg, product)
+    }
+
+    private fun getScriptCommandPacket(commandSample: CommandSample, possibleArgs: MutableList<String>) : CommandPacket? {
+        val fileWithScript = File(possibleArgs[0]).also { if (!it.isFile) return null }
+        val linesFromTheFile = fileWithScript.bufferedReader().readLines()
+
+        return CommandPacket(COMMAND_EXECUTE, commandSample.name, linesFromTheFile)
     }
 
 
 
 
 
-    private fun getListWithCastedArgs(typeOfArgs: List<KClass<out Any>>, possibleArgs: MutableList<String>) : MutableList<Any>?{
+    private fun MutableList<String>.tryCastTo(typeOfArgs: List<KClass<out Any>>) : MutableList<Any>?{
+        val possibleArgs = this
+
         if(typeOfArgs.size != possibleArgs.size) return null
 
         val commandArgs = mutableListOf<Any>()

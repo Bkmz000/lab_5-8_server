@@ -1,4 +1,4 @@
-package client.command
+package client.command.processing
 
 enum class RequestType {
     COMMAND_EXECUTE,

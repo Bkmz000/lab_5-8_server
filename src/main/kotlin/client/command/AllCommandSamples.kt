@@ -1,6 +1,7 @@
 package client.command
 
-import client.command.CommandType.*
+import client.command.processing.CommandType.*
+import client.command.processing.CommandSample
 
 
 class AllCommandSamples {
@@ -10,6 +11,7 @@ class AllCommandSamples {
         addSample(CommandSample("insert", OBJECT, listOf(Int::class)))
         addSample(CommandSample("remove", ARGUMENT, listOf(Int::class)))
         addSample(CommandSample("show", NON_ARGUMENT))
+        addSample(CommandSample("execute_script", SCRIPT, listOf(String::class)))
     }
 
     fun addSample(commandSample: CommandSample) {

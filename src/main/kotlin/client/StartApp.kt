@@ -7,9 +7,15 @@ class StartApp {
     fun start(){
         println("Welcome to the CLI \"Product Collection\"")
         while(true) {
-            val a = readln()
-            val b = CommandInterpretation.getCommandPacket(a)
-            println(b)
+            val messageFromUser = readln()
+            val commandPacket = CommandInterpretation.getCommandPacket(messageFromUser)
+
+            if(commandPacket != null) {
+                println(commandPacket)
+            } else {
+                println("Unknown command")
+            }
         }
     }
+
 }
