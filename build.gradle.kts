@@ -26,6 +26,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.21")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
     implementation("com.google.code.gson:gson:2.10.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     ksp("io.insert-koin:koin-ksp-compiler:1.2.0")
 }
 
@@ -40,5 +41,5 @@ kotlin {
 }
 
 application {
-    mainClass.set("app.Main.kt")
+    mainClass.set("server.Main.kt")
 }

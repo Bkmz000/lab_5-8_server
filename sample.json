@@ -33,6 +33,23 @@
             "type": "PUBLIC"
         }
     },
+    "3": {
+        "id": 529422500,
+        "name": "ngfjgnf",
+        "coordinates": {
+            "x": 2,
+            "y": 2.0
+        },
+        "creationDate": "2023-05-14 14:59",
+        "price": 1243,
+        "unitOfMeasure": "KILOGRAMS",
+        "manufacturer": {
+            "id": 529422500,
+            "name": "gjfgf",
+            "fullName": "fdfd",
+            "type": "PUBLIC"
+        }
+    },
     "4": {
         "id": 788162100,
         "name": "3",
@@ -64,23 +81,6 @@
             "id": 115589500,
             "name": "fdf",
             "fullName": "fdsv",
-            "type": "PUBLIC"
-        }
-    },
-    "15": {
-        "id": 91045200,
-        "name": "1",
-        "coordinates": {
-            "x": 2,
-            "y": 3.0
-        },
-        "creationDate": "2023-05-12 15:04",
-        "price": 23,
-        "unitOfMeasure": "KILOGRAMS",
-        "manufacturer": {
-            "id": 91045200,
-            "name": "5",
-            "fullName": "6",
             "type": "PUBLIC"
         }
     }
