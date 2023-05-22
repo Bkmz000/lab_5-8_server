@@ -1,7 +1,5 @@
 package server.command.execute
 
-import server.command.execute.`object`.Insert
-import server.command.execute.`object`.Update
 import kotlin.reflect.KClass
 
 class AllCommands {

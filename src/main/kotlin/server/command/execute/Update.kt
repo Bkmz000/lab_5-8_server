@@ -1,4 +1,4 @@
-package server.command.execute.`object`
+package server.command.execute
 
 import server.command.execute.ClientCommand
 import server.command.`object`.ProductBuilder
@@ -7,12 +7,12 @@ import server.command.`object`.ProductBuilderScript
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
+import server.product.Product
 
 class Update : ClientCommand {
 
 
     private val productId: Int
-    private lateinit var productBuilder: ProductBuilder
     override val name = "update"
 
     constructor(arg: Int) {
@@ -27,10 +27,8 @@ class Update : ClientCommand {
 
     override fun execute(arg: Any?): JsonElement {
         return if(productCollection.products.containsKey(productId)){
-            val productBuilder: ProductBuilder = if (arg != null) ProductBuilderScript() else ProductBuilderCLI()
-            val newProduct = productBuilder.build(arg)
-            if(newProduct != null){
-                productCollection.products.replace(productId,newProduct)
+            if(arg != null){
+                productCollection.products.replace(productId,arg as Product)
                     Json.encodeToJsonElement("Product was successfully updated")
             } else {
                 Json.encodeToJsonElement("Unable to add")

@@ -49,78 +49,53 @@ object CommandInterpretation : KoinComponent {
 
     private fun getArgumentCommandPacket(commandSample: CommandSample, possibleArgs: MutableList<String>) : CommandPacket? {
 
-        val commandArgs = possibleArgs.tryCastTo(commandSample.typeOfArgs!!) ?: return null
+        val commandArgs = possibleArgs.tryCastListAs(commandSample.typeOfArgs!!) ?: return null
 
         return  CommandPacket(COMMAND_EXECUTE, commandSample.name, commandArgs)
 
     }
 
     private fun getObjectCommandPacket(commandSample: CommandSample, possibleArgs: MutableList<String>) : CommandPacket? {
-        val commandArg = possibleArgs.tryCastTo(commandSample.typeOfArgs!!) ?: return null
+        val commandArg = possibleArgs.tryCastListAs(commandSample.typeOfArgs!!) ?: return null
 
         val product = ProductBuilderCLI().build() ?: return null
 
         return CommandPacket(COMMAND_EXECUTE, commandSample.name, commandArg, product)
     }
 
-    private fun getScriptCommandPacket(commandSample: CommandSample, possibleArgs: MutableList<String>) : CommandPacket? {
-        val fileWithScript = File(possibleArgs[0]).also { if (!it.isFile) return null }
-        val linesFromTheFile = fileWithScript.bufferedReader().readLines()
+    private fun getScriptCommandPacket(commandSample: CommandSample, possibleFileName: MutableList<String>) : CommandPacket? {
+        val fileName = possibleFileName[0]
+        val fileWithScript = File(fileName).also { if (!it.isFile) return null }
+        val linesFromFile = fileWithScript.bufferedReader().readLines()
 
-        return CommandPacket(COMMAND_EXECUTE, commandSample.name, linesFromTheFile)
+        return CommandPacket(COMMAND_EXECUTE, commandSample.name, linesFromFile)
     }
 
 
 
 
 
-    private fun MutableList<String>.tryCastTo(typeOfArgs: List<KClass<out Any>>) : MutableList<Any>?{
+    private fun MutableList<String>.tryCastListAs(typeOfArgs: List<KClass<out Any>>) : MutableList<Any>?{
         val possibleArgs = this
-
         if(typeOfArgs.size != possibleArgs.size) return null
 
         val commandArgs = mutableListOf<Any>()
-
-        typeOfArgs.forEachIndexed { index, it ->
-            val argument = possibleArgs[index].tryCastTo(it)
-            when(argument){
-                is Outcome.Success -> commandArgs.add(argument.value)
-                is Outcome.Error -> return null
-            }
+        typeOfArgs.forEachIndexed { index, typeOfArg ->
+            val argument = possibleArgs[index].tryCastStringAs(typeOfArg) ?: return null
+            commandArgs.add(argument)
         }
 
         return commandArgs
     }
 
 
-    @OptIn(ExperimentalStdlibApi::class)
-    private fun String.tryCastTo(type: KClass<out Any>) : Outcome<Any> =
-        try {
-            val castedArg: Any
-            when (type) {
-                (Int::class) -> {
-                    castedArg = this.toInt()
-                    Outcome.Success(castedArg)
-                }
-                (Double::class) -> {
-                    castedArg = this.toDouble()
-                    Outcome.Success(castedArg)
-                } (String::class) -> {
-                    castedArg = this
-                Outcome.Success(castedArg)
-                }
-
-                else -> {
-                    Outcome.Error()
-                }
-            }
-
-        } catch (ex: NumberFormatException){
-        Outcome.Error()
+    private fun String.tryCastStringAs(type: KClass<out Any>) : Any? {
+        return when(type) {
+            Int::class -> this.toIntOrNull()
+            Double::class -> this.toDoubleOrNull()
+            String::class -> this
+            else -> return null
         }
-
-    sealed class Outcome<out T : Any> {
-        data class Success<out T : Any>(val value: T) : Outcome<T>()
-        data class Error(val message: String? = null, val cause: Exception? = null) : Outcome<Nothing>()
     }
+
 }

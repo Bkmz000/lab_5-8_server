@@ -1,38 +1,54 @@
 package server.command.invoke
 
+import client.product.Product
 import server.command.execute.AllCommands
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import server.command.execute.ClientCommand
 import kotlin.reflect.*
 
 object CommandInterpretation : KoinComponent {
 
     private val allCommands by inject<AllCommands>()
 
-    fun getPairOfConstructorAndArgs(message: String): Pair<KFunction<Any>,ArrayList<Any>?>?{
+    fun getExecuteCommand(commandName : String, listOfArgs: List<out Any>, product: Product? = null)//: ClientCommand?
+     {
 
-        val listOfWords = splitStringToListWithoutBlanks(message) ?: return null
-        val commandName = listOfWords.removeFirst()
+//        if(allCommands.commands.containsKey(commandName)) {
+//            val commandConstructor = createInstanceOfCommandConstructor(commandName)
+//            val executeCommand = when(listOfArgs.size) {
+//                1 -> commandConstructor.call(listOfArgs)
+//                2 -> commandConstructor.call()
+//            }
+//        }
 
-        if (allCommands.commands.containsKey(commandName)){
-            val commandConstructor = createInstanceOfCommandConstructor(commandName)
-            val typesOfCommandArgs = getTypeOfArgConstructor(commandConstructor)
 
-            return when(getTypeOfCommandByCheckingValidOfArgs(typesOfCommandArgs,listOfWords)){
-                TypeOfCommand.ARGUMENT -> {
-                    getPairOfArgumentCommandAndArgs(commandConstructor = commandConstructor,typesOfArgs = typesOfCommandArgs!!, possibleArgs =  listOfWords)
-                }
 
-                TypeOfCommand.NON_ARGUMENT -> {
-                    getPairOfNONArgumentCommandAndNull(commandConstructor = commandConstructor)
-                }
 
-                TypeOfCommand.NOT_A_COMMAND -> {
-                    null
-                }
-            }
-        }// if
-        return null
+
+
+//        val listOfWords = splitStringToListWithoutBlanks(message) ?: return null
+//        val commandName = listOfWords.removeFirst()
+//
+//        if (allCommands.commands.containsKey(commandName)){
+//            val commandConstructor = createInstanceOfCommandConstructor(commandName)
+//            val typesOfCommandArgs = getTypeOfArgConstructor(commandConstructor)
+//
+//            return when(getTypeOfCommandByCheckingValidOfArgs(typesOfCommandArgs,listOfWords)){
+//                TypeOfCommand.ARGUMENT -> {
+//                    getPairOfArgumentCommandAndArgs(commandConstructor = commandConstructor,typesOfArgs = typesOfCommandArgs!!, possibleArgs =  listOfWords)
+//                }
+//
+//                TypeOfCommand.NON_ARGUMENT -> {
+//                    getPairOfNONArgumentCommandAndNull(commandConstructor = commandConstructor)
+//                }
+//
+//                TypeOfCommand.NOT_A_COMMAND -> {
+//                    null
+//                }
+//            }
+//        }// if
+//        return null
     }
 
     private fun splitStringToListWithoutBlanks(message: String): MutableList<String>? {

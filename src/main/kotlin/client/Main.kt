@@ -1,9 +1,9 @@
 package client
 
-import allModules
+import client.modules.allModules
 import org.koin.core.context.startKoin
 import org.koin.java.KoinJavaComponent
-import client.StartApp
+import org.koin.java.KoinJavaComponent.inject
 
 fun main(){
     startKoin {
@@ -12,7 +12,7 @@ fun main(){
 
 
 
-    val app by KoinJavaComponent.inject<StartApp>(StartApp::class.java)
+    val app by inject<StartApp>(StartApp::class.java)
     app.start()
 
 
