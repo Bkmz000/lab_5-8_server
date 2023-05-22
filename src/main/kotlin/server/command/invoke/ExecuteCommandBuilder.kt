@@ -1,26 +1,33 @@
 package server.command.invoke
 
-import client.product.Product
 import server.command.execute.AllCommands
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import server.command.execute.ClientCommand
+import server.product.Product
 import kotlin.reflect.*
 
-object CommandInterpretation : KoinComponent {
+object ExecuteCommandBuilder : KoinComponent {
 
     private val allCommands by inject<AllCommands>()
 
-    fun getExecuteCommand(commandName : String, listOfArgs: List<out Any>, product: Product? = null)//: ClientCommand?
+    fun getExecuteCommand(commandName : String, listOfArgs: List<out Any>? = null, product: Product? = null) : ClientCommand?
      {
 
-//        if(allCommands.commands.containsKey(commandName)) {
-//            val commandConstructor = createInstanceOfCommandConstructor(commandName)
-//            val executeCommand = when(listOfArgs.size) {
-//                1 -> commandConstructor.call(listOfArgs)
-//                2 -> commandConstructor.call()
-//            }
-//        }
+        if(allCommands.commands.containsKey(commandName)) {
+            val commandConstructor = createInstanceOfCommandConstructor(commandName)
+
+            if (listOfArgs == null) return commandConstructor.call() as ClientCommand
+
+            val executeCommand = when(listOfArgs.size) {
+                1 -> commandConstructor.call(listOfArgs[0])
+                2 -> commandConstructor.call(listOfArgs[0], listOfArgs[1])
+                else -> null
+            }
+
+
+
+        }
 
 
 

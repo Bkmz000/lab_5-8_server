@@ -5,13 +5,13 @@ import server.product.Product
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
-import server.command.execute.ClientCommand
 
 
-class Insert : ClientCommand {
+class Insert : ObjectCommand {
 
     private val productId: Int
     override val name = "insert"
+    override lateinit var product: Product
 
 
     constructor( productId: Int) {
