@@ -6,16 +6,11 @@ import kotlinx.serialization.json.encodeToJsonElement
 
 class Clear : ClientCommand() {
 
-
     override val name: String = "clear"
 
-
-    override fun execute(arg: Any?): JsonElement {
+    override fun execute(): JsonElement {
         productCollection.products.clear()
-        return if(productCollection.products.isEmpty())
-            Json.encodeToJsonElement("Success")
-        else
-            Json.encodeToJsonElement("The collection has not been cleaned")
-
+        return Json.encodeToJsonElement("The collection is now empty")
     }
+
 }

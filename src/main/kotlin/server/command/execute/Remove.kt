@@ -4,27 +4,20 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 
-class Remove : ClientCommand {
+class Remove : ClientCommand() {
 
-    private val productId: Int
+    override val name: String = "remove"
 
-    constructor(arg: Int) {
-        this.productId = arg
-    }
+    private val productId: Int = args!![0] as Int
 
-    override val name = "remove"
 
-    override fun execute(arg: Any?): JsonElement {
-        return if(productCollection.products.containsKey(productId)){
-             productCollection.products.remove(productId)
-            if (!productCollection.products.containsKey(productId)){
-                Json.encodeToJsonElement("Product with id ($productId) was successfully removed")
-            } else {
-                Json.encodeToJsonElement("Product with id ($productId) was not removed")
-            }
-
+    override fun execute(): JsonElement {
+        return if (productCollection.products.containsKey(productId)) {
+            productCollection.products.remove(productId)
+            Json.encodeToJsonElement("Product with id ($productId) was successfully removed")
         } else {
-            Json.encodeToJsonElement("No such element")
+            Json.encodeToJsonElement("No such element with id = $productId")
         }
     }
+
 }

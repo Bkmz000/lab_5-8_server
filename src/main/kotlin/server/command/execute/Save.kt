@@ -10,13 +10,13 @@ import server.product.Product
 
 class Save : ClientCommand() {
 
+    override val name: String = "save"
+
     private val file = FileCollection.getFile()
 
     private val json = Json { prettyPrint = true }
 
-    override val name = "save"
-
-    override fun execute(arg: Any?): JsonElement {
+    override fun execute(): JsonElement {
 
         return if (file != null){
             val collectionJson = json.encodeToString(MapSerializer(Int.serializer(), Product.serializer()),productCollection.products)

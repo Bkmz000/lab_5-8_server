@@ -7,14 +7,14 @@ import org.koin.core.component.KoinComponent
 
 class Info : ClientCommand(), KoinComponent {
 
+    override val name: String = "info"
+
 
     private val collectionType = productCollection.products::class.toString()
     private val creationDate = productCollection.creationDate
     private val numberOfElements = productCollection.products.size
 
-    override val name: String = "info"
-
-    override fun execute(arg: Any?): JsonElement {
+    override fun execute(): JsonElement {
 
         return Json.encodeToJsonElement(this.toString())
 

@@ -1,16 +1,14 @@
 package server.modules
 
-import server.StartApp
-import server.collection.ProductCollection
-import server.command.execute.AllCommands
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-import server.command.`object`.ProductBuilderCLI
+import server.StartApp
+import server.collection.ProductCollection
 import server.command.invoke.CommandInvoker
+import server.command.`object`.ProductBuilderCLI
 
 val commandModule = module {
-    singleOf(::AllCommands)
     factoryOf(::ProductBuilderCLI)
     singleOf(::CommandInvoker)
 }

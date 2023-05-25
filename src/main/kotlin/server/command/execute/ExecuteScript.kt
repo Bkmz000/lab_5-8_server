@@ -10,23 +10,23 @@ import java.io.File
 
 class ExecuteScript : ClientCommand, KoinComponent {
 
+    override val name: String = "execute_script"
+
     private val fileName: String
     private val fileWithScript: File?
     private val commandInvoker by inject<CommandInvoker>()
 
 
-    constructor(fileName: String) {
+    constructor(fileName: String) : super() {
         this.fileName = fileName
         fileWithScript = if (File(fileName).isFile) File(fileName) else null
     }
-
-    override val name: String = "execute_script"
 
 
     //execute_script C:/itmo/labs/kotlin/lab5/script1.txt
 
 
-    override fun execute(arg: Any?): JsonElement {
+    override fun execute(): JsonElement {
 //
 //
 //        if (fileWithScript == null) return Json.encodeToJsonElement("File with script was not found")

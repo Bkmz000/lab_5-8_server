@@ -7,7 +7,7 @@ class Exit : ClientCommand() {
 
     override val name: String = "exit"
 
-    override fun execute(arg: Any?): JsonElement {
+    override fun execute(): JsonElement {
         exitProcess(0)
     }
 }

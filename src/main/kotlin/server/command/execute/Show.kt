@@ -7,23 +7,21 @@ import org.koin.core.component.KoinComponent
 
 class Show : ClientCommand(), KoinComponent {
 
-    override val name = "show"
+    override val name: String = "show"
+
     companion object{
         const val info = "Displays the list of all products in the collection"
     }
 
 
-    override fun execute(arg: Any?):JsonElement {
+    override fun execute(): JsonElement {
         val json = Json {prettyPrint = true}
 
         return if(productCollection.products.isNotEmpty()){
-            val mapAsString = StringBuilder()
-
-            for (item in productCollection.products){
-                mapAsString.append(item.toString())
-
+            val productsAsString = productCollection.products.toList().joinToString {
+                "\n" + it.toString()
             }
-            json.encodeToJsonElement(mapAsString.toString())
+            Json.encodeToJsonElement(productsAsString)
         } else {
             json.encodeToJsonElement("The collection is empty")
         }

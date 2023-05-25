@@ -7,34 +7,25 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 
 
-class Insert : ObjectCommand {
+class Insert : ClientCommand() {
 
-    private val productId: Int
-    override val name = "insert"
-    override lateinit var product: Product
+    override val name: String = "insert"
 
+    private val productId: Int = args!![0] as Int
+    private var product: Product = args!![1] as Product
 
-    constructor( productId: Int) {
-        this.productId = productId
-    }
 
     companion object{
         const val info: String = "Adds a product to the collection"
     }
 
 
-    override fun execute(arg: Any?): JsonElement {
-
-          return if(!productCollection.products.containsKey(productId)){
-                 productCollection.products[productId] = arg as Product
-                    return if(productCollection.products.containsKey(productId)){
-                        Json.encodeToJsonElement("Product with id ($productId) was successfully added")
-                    } else {
-                        Json.encodeToJsonElement("Unable to add")
-                    }
-          } else {
-              Json.encodeToJsonElement("The product with id($productId) already exist")
-          }
-
+    override fun execute(): JsonElement {
+        return if (!productCollection.products.containsKey(productId)) {
+            productCollection.products[productId] = product
+            return Json.encodeToJsonElement("Product with id ($productId) was successfully added")
+        } else {
+            Json.encodeToJsonElement("The product with id($productId) already exist")
+        }
     }
 }

@@ -11,11 +11,4 @@ class ProductCollection {
 
     val creationDate: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
 
-
-
-
-
-
-
-
 }

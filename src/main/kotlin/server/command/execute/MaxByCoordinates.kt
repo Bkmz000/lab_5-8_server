@@ -8,13 +8,14 @@ class MaxByCoordinates : ClientCommand() {
 
     override val name: String = "max_by_coordinates"
 
-    override fun execute(arg: Any?): JsonElement {
+    override fun execute(): JsonElement {
 
-        return if(productCollection.products.isNotEmpty()){
-            val productWithMaxCoordinates = productCollection.products.values.maxBy { it.coordinates.x + it.coordinates.y }
+        return if (productCollection.products.isNotEmpty()) {
+            val productWithMaxCoordinates =
+                productCollection.products.values.maxBy { it.coordinates.x + it.coordinates.y }
             Json.encodeToJsonElement(productWithMaxCoordinates.toString())
-        }
-         else
+        } else {
             Json.encodeToJsonElement("The collection is empty")
+        }
     }
 }
